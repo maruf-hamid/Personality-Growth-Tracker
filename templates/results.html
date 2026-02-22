@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block title %}Your OCEAN Results{% endblock %}
+
+{% block main %}
+<div class="row justify-content-center">
+  <div class="col-md-9">
+    <h2 class="mb-1">Your Big Five (OCEAN) Results</h2>
+
+    {% if result %}
+      <p class="text-muted mb-4">Taken on: {{ taken_at }}</p>
+
+      <table class="table table-bordered table-hover text-center align-middle shadow-sm">
+        <thead class="table-dark">
+          <tr>
+            <th>Trait</th>
+            <th>Score (out of 10)</th>
+            <th>Low (1–4)</th>
+            <th>Range</th>
+            <th>High (8–10)</th>
+            <th>Your Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set low_descs  = {
+              "O": "Preserver — Practical, conservative, expert",
+              "C": "Flexible — Spontaneous, fun loving, unorganized",
+              "E": "Introvert — Private, reserved, independent",
+              "A": "Challenger — Skeptical, tough, self-interested",
+              "N": "Resilient — Secure, rational, guilt free"
+          } %}
+          {% set high_descs = {
+              "O": "Explorer — Curious, broad interests, novelty-seeking",
+              "C": "Focused — Dependable, organized, disciplined",
+              "E": "Extrovert — Assertive, sociable, talkative",
+              "A": "Adapter — Trusting, humble, altruistic",
+              "N": "Reactive — Excitable, worrying, high-strung"
+          } %}
+          {% set colors = {"low": "danger", "mid": "warning", "high": "success"} %}
+
+          {% for r in result %}
+          <tr>
+            <td class="fw-bold">
+              <span class="text-{{ colors[r.level] }}">{{ r.key }}</span><br>
+              <small class="text-muted">{{ r.name }}</small>
+            </td>
+            <td>
+              <span class="fs-5 fw-bold">{{ r.score }}</span>/10
+              <div class="progress mt-1" style="height:10px;">
+                <div class="progress-bar bg-{{ colors[r.level] }}"
+                     style="width:{{ ((r.score - 2) / 8 * 100)|int }}%"></div>
+              </div>
+            </td>
+            <td class="text-start small text-danger">{{ low_descs[r.key] }}</td>
+            <td class="small text-muted">1—5—10</td>
+            <td class="text-start small text-success">{{ high_descs[r.key] }}</td>
+            <td>
+              <span class="badge bg-{{ colors[r.level] }} fs-6">{{ r.label }}</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="d-flex gap-3 justify-content-center mt-4">
+        <a href="/test" class="btn btn-primary">Retake Test</a>
+        <a href="/history" class="btn btn-outline-secondary">View History</a>
+      </div>
+
+    {% else %}
+      <div class="alert alert-info mt-4">
+        You haven't taken the test yet. <a href="/test">Take it now!</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

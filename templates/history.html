@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block title %}History{% endblock %}
+
+{% block main %}
+<div class="row justify-content-center">
+  <div class="col-md-11">
+    <h2 class="mb-4">Your Test History</h2>
+
+    {% if history %}
+      {% set colors = {"low": "danger", "mid": "warning", "high": "success"} %}
+
+      <table class="table table-bordered table-hover text-center align-middle shadow-sm">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Date &amp; Time</th>
+            <th>O — Openness</th>
+            <th>C — Conscientiousness</th>
+            <th>E — Extraversion</th>
+            <th>A — Agreeableness</th>
+            <th>N — Neuroticism</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in history %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td class="small text-muted">{{ entry.taken_at }}</td>
+            {% for t in entry.traits %}
+            <td>
+              <span class="fw-bold">{{ t.score }}/10</span><br>
+              <span class="badge bg-{{ colors[t.level] }}">{{ t.label }}</span>
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <a href="/test" class="btn btn-primary mt-2">Take the Test Again</a>
+
+    {% else %}
+      <div class="alert alert-info">
+        No attempts yet. <a href="/test">Take the test now!</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
